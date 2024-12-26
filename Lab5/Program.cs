@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Net.WebSockets;
 using System.Numerics;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -12,6 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class Program
 {
+   
     public static void Main()
     {
         Program program = new Program();
@@ -136,26 +138,25 @@ public class Program
         }
         return sum / count;
     }
+    public void EditArray(double[] array, int maxIndex)
+    {
+        double srForArray = sr(array, maxIndex);
+        for (int i = maxIndex; i < array.Length; i++)
+        {
+            if (array[maxIndex] == array[i]) array[i] = srForArray;
+        }
+    }
     public void Task_2_2(double[] A, double[] B)
     {
         int maxIforA = FindMaxIndex(A);
         int maxIforB = FindMaxIndex(B);
         if (A.Length - maxIforA > B.Length - maxIforB)
         {
-            double srForA = sr(A, maxIforA);
-            for (int i = maxIforA; i < A.Length; i++)
-            {
-                if (A[maxIforA] == A[i]) A[i] = srForA;
-            }
-            
+            EditArray(A, maxIforA);
         }
         else if (A.Length - maxIforA < B.Length - maxIforB)
         {
-            double srForB = sr(B, maxIforB);
-            for (int i = maxIforB; i < B.Length; i++)
-            {
-                if (B[maxIforB] == B[i]) B[i] = srForB;
-            }
+            EditArray(B, maxIforB);
         }
         // create and use FindMaxIndex(array);
         // only 1 array has to be changed!
@@ -759,89 +760,66 @@ public class Program
         answerSecond = FindSequence(second, 0, second.Length - 1);
         // end
     }
-
-    public void Task_2_28b(int[] first, int[] second, ref int[,] answerFirst, ref int[,] answerSecond)
+    public int[,] GetFor2_28b(int[] array)
     {
         int k = 0;
-        for (int i = 0; i < first.Length; i++)
+        for (int i = 0; i < array.Length; i++)
         {
-            for (int j = i + 1; j < first.Length; j++)
+            for (int j = i + 1; j < array.Length; j++)
             {
-                if (FindSequence(first, i, j) != 0) k++;
+                if (FindSequence(array, i, j) != 0) k++;
             }
         }
-        answerFirst = new int[k, 2];
+        int[,] answerFirst = new int[k, 2];
         int n = 0;
-        for (int i = 0; i < first.Length; i++)
+        for (int i = 0; i < array.Length; i++)
         {
-            for (int j = i + 1; j < first.Length; j++)
+            for (int j = i + 1; j < array.Length; j++)
             {
-                if (FindSequence(first, i, j) != 0)
+                if (FindSequence(array, i, j) != 0)
                 {
                     answerFirst[n, 0] = i;
                     answerFirst[n++, 1] = j;
                 }
             }
         }
-        k = 0;
-        for (int i = 0; i < second.Length; i++)
-        {
-            for (int j = i + 1; j < second.Length; j++)
-            {
-                if (FindSequence(second, i, j) != 0) k++;
-            }
-        }
-        answerSecond = new int[k, 2];
-        n = 0;
-        for (int i = 0; i < second.Length; i++)
-        {
-            for (int j = i + 1; j < second.Length; j++)
-            {
-                if (FindSequence(second, i, j) != 0)
-                {
-                    answerSecond[n, 0] = i;
-                    answerSecond[n++, 1] = j;
-                }
-            }
-        }
+        return answerFirst;
+
     }
 
+    public void Task_2_28b(int[] first, int[] second, ref int[,] answerFirst, ref int[,] answerSecond)
+    {
+        answerFirst = GetFor2_28b(first);
+        answerSecond = GetFor2_28b(second);
+    }
 
-
-    public void Task_2_28c(int[] first, int[] second, ref int[] answerFirst, ref int[] answerSecond)
+    public int[] GetFor2_28(int[] array)
     {
         int start_for_first = 0;
         int end_for_first = 0;
-        for (int i = 0; i < first.Length; i++) 
+        for (int i = 0; i < array.Length; i++)
         {
-            for (int j = i + 1; j < first.Length; j++)
+            for (int j = i + 1; j < array.Length; j++)
             {
-                if (FindSequence(first, i, j) != 0 && (end_for_first - start_for_first) < (j - i))
+                if (FindSequence(array, i, j) != 0 && (end_for_first - start_for_first) < (j - i))
                 {
                     start_for_first = i;
                     end_for_first = j;
                 }
             }
         }
-        answerFirst = new int[2];
+        int[] answerFirst = new int[2];
         answerFirst[0] = start_for_first;
         answerFirst[1] = end_for_first;
-        int start_for_second = 0;
-        int end_for_second = 0;
-        for (int i = 0; i < second.Length; i++)
-        {
-            for (int j = i + 1; j < second.Length; j++)
-            {
-                if (FindSequence(second, i, j) != 0 && (end_for_second - start_for_second) < (j - i))
-                {
-                    start_for_second = i;
-                    end_for_second = j;
-                }
-            }
-        }
-        answerSecond = new int[2];
-        answerSecond[0] = start_for_second;
-        answerSecond[1] = end_for_second;
+        return answerFirst;
+
+    }
+
+
+    public void Task_2_28c(int[] first, int[] second, ref int[] answerFirst, ref int[] answerSecond)
+    {
+        answerFirst = GetFor2_28(first);
+        answerSecond = GetFor2_28(second);
 
     }
     #endregion
