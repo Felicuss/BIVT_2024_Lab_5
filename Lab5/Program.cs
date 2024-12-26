@@ -550,18 +550,19 @@ public class Program
         }
         return array_of_index;
     }
+    public void RemoveColums(ref int[,] array)
+    {
+        int[] colums_for_array = FindColumsWithoutNullElements(array);
+        for (int i = colums_for_array.Length - 1; i >= 0; i--)
+        {
+            RemoveColumn(ref array, colums_for_array[i]);
+        }
+
+    }
     public void Task_2_20(ref int[,] A, ref int[,] B)
     {
-        int[] colums_for_A = FindColumsWithoutNullElements(A);
-        int[] colums_for_B = FindColumsWithoutNullElements(B);
-        for (int i = colums_for_A.Length - 1; i >= 0; i--)
-        {
-            RemoveColumn(ref A, colums_for_A[i]);
-        }
-        for (int i = colums_for_B.Length - 1; i >= 0; i--)
-        {
-            RemoveColumn(ref B, colums_for_B[i]);
-        }
+        RemoveColums(ref A);
+        RemoveColums(ref B);
 
         // use RemoveColumn(matrix, columnIndex); from 2_10
 
